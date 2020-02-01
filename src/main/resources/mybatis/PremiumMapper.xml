@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xwx.mapper.PlanMapper">
+
+	<select id="getList" resultType="com.xwx.entity.Plan">
+		select a.*,GROUP_CONCAT(b.dname) dname from plan a LEFT JOIN dept b on a.did=b.did 
+		<where>
+			<if test="mhname!=null and mhname!=''">
+				and a.pname like '%${mhname}%' 
+			</if>
+		</where>
+		GROUP BY a.pid
+	</select>
+
+	<select id="getPlanBypid" resultType="com.xwx.entity.Plan">
+		select a.*,GROUP_CONCAT(b.dname) dname from plan a LEFT JOIN dept b on a.did=b.did GROUP BY a.pid having a.pid=${pid}
+	</select>
+	
+	<update id="xg">
+		update plan set pname=#{pname},amount=#{amount},manager=#{manager} where pid=#{pid}
+	</update>
+	
+	<insert id="tj">
+		insert into plan set pname=#{pname},did=#{did},amount=#{amount},manager=#{manager},content=#{content}
+	</insert>	
+	
+	<delete id="del">
+		delete from plan where pid in (${pid})
+	</delete>
+	
+</mapper>
